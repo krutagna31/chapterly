@@ -1,10 +1,9 @@
-import { ModeToggle } from "@/components/mode-toggle";
+import BookList from "@/components/books-list";
 
 export default function Home() {
   return (
-    <div>
-      <h1>React Shadcn Template</h1>
-      <ModeToggle />
-    </div>
+    <>
+    <BookList />
+   </>
   );
 }
