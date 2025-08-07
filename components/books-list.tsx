@@ -44,6 +44,14 @@ export default function BookList() {
             )}
           </TableBody>
         </Table>
+        <div>
+          <label>All</label>
+          <input type="checkbox" />
+          <label>To Read</label>
+          <input type="checkbox" />
+          <label>Completed</label>
+          <input type="checkbox" />
+        </div>
       </Container>
     </section>
   );
