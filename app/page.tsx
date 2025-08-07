@@ -1,12 +1,9 @@
-import Header from "@/components/header";
+import BookList from "@/components/book-list";
 
 export default function Home() {
   return (
-    <div>
-      <Header />
-      <main>
-        <h1>Hello</h1>
-      </main>
-    </div>
+    <>
+    <BookList />
+   </>
   );
 }
