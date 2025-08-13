@@ -23,7 +23,7 @@ import {
 import { useBooks } from "@/context/books-provider";
 import { Search } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Response {
   id: string;
