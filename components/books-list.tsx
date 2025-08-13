@@ -37,7 +37,7 @@ export default function BookList() {
               books.map((book) => (
                 <TableRow key={book.id}>
                   <TableCell>{book.title}</TableCell>
-                  <TableCell>{book.authors.join("")}</TableCell>
+                  <TableCell>{book.authors.join(", ")}</TableCell>
                   <TableCell>{book.state}</TableCell>
                 </TableRow>
               ))
