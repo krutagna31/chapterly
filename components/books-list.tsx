@@ -14,8 +14,7 @@ import { useBooks } from "@/context/books-provider";
 
 export default function BookList() {
   const { books } = useBooks();
-  console.log(useBooks());
-
+  
   return (
     <section>
       <Container>
@@ -25,7 +24,7 @@ export default function BookList() {
             <TableRow>
               <TableHead>Title</TableHead>
               <TableHead>Authors</TableHead>
-              <TableHead>State</TableHead>
+              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -38,20 +37,12 @@ export default function BookList() {
                 <TableRow key={book.id}>
                   <TableCell>{book.title}</TableCell>
                   <TableCell>{book.authors.join(", ")}</TableCell>
-                  <TableCell>{book.state}</TableCell>
+                  <TableCell>{book.status}</TableCell>
                 </TableRow>
               ))
             )}
           </TableBody>
         </Table>
-        <div>
-          <label>All</label>
-          <input type="checkbox" />
-          <label>To Read</label>
-          <input type="checkbox" />
-          <label>Completed</label>
-          <input type="checkbox" />
-        </div>
       </Container>
     </section>
   );
