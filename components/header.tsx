@@ -1,6 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
+import { Search } from "lucide-react";
+import { useBooks } from "@/context/books-provider";
 import { ModeToggle } from "@/components/mode-toggle";
+import { Container } from "@/components/ui/container";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Container } from "@/components/ui/container";
 import {
   Dialog,
   DialogContent,
@@ -19,21 +24,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useBooks } from "@/context/books-provider";
-import { Search } from "lucide-react";
-import Link from "next/link";
 import { Status } from "@/types/types";
-import { useState } from "react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface Response {
   id: string;
@@ -46,33 +46,52 @@ interface Response {
 export default function Header() {
   const [responses, setResponses] = useState<Response[]>([]);
   const [loading, setLoading] = useState(false);
-  const { onBookAdd } = useBooks();
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const { books, onBookAdd } = useBooks();
 
-  const fetchBook = async (query: string) => {
+  const fetchBook = async (query: string, newPage: number) => {
+    console.log(newPage);
     setLoading(true);
+    const startIndex = (newPage - 1) * 10;
     const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${query}`,
+      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&startIndex=${startIndex}`,
     );
     const data = await response.json();
+    console.log(data.items);
     setResponses(data.items);
     setLoading(false);
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    fetchBook(event.target.value);
+    const query = event.target.value.trim();
+    setQuery(query);
+    setPage(1);
+    if (query.length > 0) {
+      fetchBook(query, page);
+    } else {
+      setResponses([]);
+    }
   };
 
-  const handleBookAdd = (id: string, title: string, authors: string[]) => {
-    onBookAdd({ id, title, authors, status: "toRead" });
+  const findBookStatus = (id: string): string => {
+    const book = books.find((book) => book.id === id);
+    return book ? book.status : "toRead";
   };
 
-  const truncate = (str: string, maxLength: number) =>
-    str.length > maxLength ? str.slice(0, maxLength) : str;
+  const truncate = (str: string, maxLength: number) => {
+    return str.length > maxLength ? str.slice(0, maxLength) : str;
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    fetchBook(query, newPage);
+  };
 
   return (
     <header className="py-4">
       <Container className="flex items-center justify-between">
-        <Link href="#">Chapterly</Link>
+        <Link href="#">Chapterly{page}</Link>
         <Dialog>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-4" variant="outline">
@@ -87,69 +106,81 @@ export default function Header() {
             </DialogDescription>
             <Input
               type="text"
-              placeholder="Enter book/author name"
+              placeholder="Start searching..."
               onChange={handleSearchChange}
             />
-            <Table>
-              <TableCaption>A list of books</TableCaption>
-              <TableHeader>
-                <TableRow className="sr-only">
-                  <TableHead>Title</TableHead>
-                  <TableHead>Add Button</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {loading ? (
-                  <TableRow>
-                    <TableCell>Loading...</TableCell>
-                  </TableRow>
-                ) : responses.length === 0 ? (
-                  <TableRow>
-                    <TableCell>Search for a book</TableCell>
-                  </TableRow>
-                ) : (
-                  responses.map((book) => (
-                    <TableRow key={book.id}>
-                      <TableCell>
-                        {truncate(book.volumeInfo.title, 60)}
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button size="sm">Add Book</Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuLabel>Status</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuRadioGroup
-                              onValueChange={(value) =>
-                                onBookAdd({
-                                  id: book.id,
-                                  title: book.volumeInfo.title,
-                                  authors: book.volumeInfo?.authors || [],
-                                  status: value as Status,
-                                })
-                              }
-                              value="toRead"
-                            >
-                              <DropdownMenuRadioItem value="toRead">
-                                To Read
-                              </DropdownMenuRadioItem>
-                              <DropdownMenuRadioItem value="read">
-                                Reading
-                              </DropdownMenuRadioItem>
-                              <DropdownMenuRadioItem value="reading">
-                                Read
-                              </DropdownMenuRadioItem>
-                            </DropdownMenuRadioGroup>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+            {loading ? (
+              <p className="text-sm">Loading...</p>
+            ) : (
+              <ul className="space-y-2">
+                {responses.map((response) => (
+                  <li className="flex justify-between" key={response.id}>
+                    <span className="text-sm">
+                      {truncate(response.volumeInfo.title, 60)}
+                    </span>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="sm">
+                          {/* books.find(book) */}
+                          {findBookStatus(response.id)}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuLabel>Status</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuRadioGroup
+                          onValueChange={(value) =>
+                            onBookAdd({
+                              id: response.id,
+                              title: response.volumeInfo.title,
+                              authors: response.volumeInfo.authors,
+                              status: value as Status,
+                            })
+                          }
+                          value={findBookStatus(response.id)}
+                        >
+                          <DropdownMenuRadioItem value="toRead">
+                            To Read
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="reading">
+                            Reading
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="read">
+                            Read
+                          </DropdownMenuRadioItem>
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => {
+                      handlePageChange(page - 1);
+                    }}
+                    href="#"
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">1</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => {
+                      handlePageChange(page + 1);
+                    }}
+                    href="#"
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </DialogContent>
         </Dialog>
         <ModeToggle />
