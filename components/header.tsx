@@ -45,21 +45,22 @@ interface Response {
 
 export default function Header() {
   const [responses, setResponses] = useState<Response[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const { books, onBookAdd } = useBooks();
 
   const fetchBook = async (query: string, newPage: number) => {
-    console.log(newPage);
     setLoading(true);
     const startIndex = (newPage - 1) * 10;
     const response = await fetch(
       `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&startIndex=${startIndex}`,
     );
     const data = await response.json();
-    console.log(data.items);
+    console.log(data.totalItems);
     setResponses(data.items);
+    setTotalItems(data.totalItems);
     setLoading(false);
   };
 
@@ -88,10 +89,12 @@ export default function Header() {
     fetchBook(query, newPage);
   };
 
+  const totalPages = Math.ceil(totalItems / 10);
+
   return (
     <header className="py-4">
       <Container className="flex items-center justify-between">
-        <Link href="#">Chapterly{page}</Link>
+        <Link href="#">Chapterly</Link>
         <Dialog>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-4" variant="outline">
@@ -160,20 +163,46 @@ export default function Header() {
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() => {
+                      if (page === 1) {
+                        return;
+                      }
                       handlePageChange(page - 1);
                     }}
                     href="#"
                   />
                 </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
+                {Array.from({ length: totalPages }, (_, index) => index + 1)
+                  .filter(
+                    (p) =>
+                      p === 1 || p === totalPages || Math.abs(p - page) <= 2,
+                  )
+                  .map((p, i, arr) => {
+                    if (i > 0 && p - arr[i - 1] > 1) {
+                      return (
+                        <PaginationItem key={p}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      );
+                    }
+
+                    return (
+                      <PaginationItem key={p}>
+                        <PaginationLink
+                          isActive={p === page}
+                          href="#"
+                          onClick={() => handlePageChange(p)}
+                        >
+                          {p}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  })}
                 <PaginationItem>
                   <PaginationNext
                     onClick={() => {
+                      if (page === totalPages) {
+                        return;
+                      }
                       handlePageChange(page + 1);
                     }}
                     href="#"
