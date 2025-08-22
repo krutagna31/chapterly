@@ -1,6 +1,6 @@
 import BookList from "@/components/books-list";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <>
     <BookList />

@@ -1,219 +1,124 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search } from "lucide-react";
-import { useBooks } from "@/context/books-provider";
+import Image from "next/image";
+import { ViewContainer } from "@/components/layouts";
+import { Button, Input, Label } from "@/components/ui";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Container } from "@/components/ui/container";
-import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Status } from "@/types/types";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Search } from "lucide-react";
 
 interface Response {
   id: string;
   volumeInfo: {
     title: string;
     authors?: string[];
+    imageLinks?: {
+      smallThumbnail: string;
+    };
   };
 }
 
 export default function Header() {
+  const router = useRouter();
   const [responses, setResponses] = useState<Response[]>([]);
-  const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const { books, onBookAdd } = useBooks();
+  const [isFocused, setIsFocused] = useState(false);
 
-  const fetchBook = async (query: string, newPage: number) => {
+  const fetchBook = async (query: string) => {
     setLoading(true);
-    const startIndex = (newPage - 1) * 10;
     const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&startIndex=${startIndex}`,
+      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`,
     );
+
     const data = await response.json();
     console.log(data.totalItems);
-    setResponses(data.items);
-    setTotalItems(data.totalItems);
+    setResponses(data.items || []);
     setLoading(false);
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const query = event.target.value.trim();
-    setQuery(query);
-    setPage(1);
-    if (query.length > 0) {
-      fetchBook(query, page);
-    } else {
-      setResponses([]);
-    }
+    const query = event.target.value;
+    fetchBook(query);
   };
 
-  const findBookStatus = (id: string): string => {
-    const book = books.find((book) => book.id === id);
-    return book ? book.status : "toRead";
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    router.push("/search");
   };
 
   const truncate = (str: string, maxLength: number) => {
-    return str.length > maxLength ? str.slice(0, maxLength) : str;
+    return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
   };
-
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-    fetchBook(query, newPage);
-  };
-
-  const totalPages = Math.ceil(totalItems / 10);
 
   return (
     <header className="py-4">
-      <Container className="flex items-center justify-between">
+      <ViewContainer className="flex items-center justify-between">
         <Link href="#">Chapterly</Link>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="flex items-center gap-4" variant="outline">
-              Search
+        <div className="bg-popover relative w-md">
+          <form className="flex border-b-1" onSubmit={handleSubmit}>
+            <Label className="sr-only">Search</Label>
+            <Input
+              className="!bg-popover w-full rounded-none border-0"
+              onChange={handleSearchChange}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() =>
+                setTimeout(() => {
+                  setIsFocused(false);
+                }, 250)
+              }
+              type="text"
+              placeholder="Search for a book"
+            />
+            <Button variant="ghost" size="icon">
               <Search />
             </Button>
-          </DialogTrigger>
-          <DialogContent className="top-[7.5%] translate-y-[-7.5%] sm:max-w-3xl [&>button]:hidden">
-            <DialogTitle className="sr-only">Search for a book</DialogTitle>
-            <DialogDescription className="sr-only">
-              Enter the details of the book
-            </DialogDescription>
-            <Input
-              type="text"
-              placeholder="Start searching..."
-              onChange={handleSearchChange}
-            />
-            {loading ? (
-              <p className="text-sm">Loading...</p>
-            ) : (
-              <ul className="space-y-2">
-                {responses.map((response) => (
-                  <li className="flex justify-between" key={response.id}>
-                    <span className="text-sm">
-                      {truncate(response.volumeInfo.title, 60)}
-                    </span>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button size="sm">
-                          {/* books.find(book) */}
-                          {findBookStatus(response.id)}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuLabel>Status</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuRadioGroup
-                          onValueChange={(value) =>
-                            onBookAdd({
-                              id: response.id,
-                              title: response.volumeInfo.title,
-                              authors: response.volumeInfo.authors,
-                              status: value as Status,
-                            })
+          </form>
+          {isFocused && (
+            <div className="bg-popover absolute top-[calc(100%+4px)] right-0 left-0 z-10 p-4">
+              {loading && (
+                <p className="py-6 text-center text-sm">Loading...</p>
+              )}
+              {!loading && responses.length === 0 && (
+                <p className="py-6 text-center text-xs">No results found.</p>
+              )}
+              {!loading && responses.length > 0 && (
+                <ul className="space-y-4">
+                  {responses.map((response) => (
+                    <li key={response.id}>
+                      <Link
+                        className="flex items-center gap-4"
+                        href={`/${response.volumeInfo.title}`}
+                      >
+                        <Image
+                          src={
+                            response.volumeInfo.imageLinks?.smallThumbnail || ""
                           }
-                          value={findBookStatus(response.id)}
-                        >
-                          <DropdownMenuRadioItem value="toRead">
-                            To Read
-                          </DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="reading">
-                            Reading
-                          </DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="read">
-                            Read
-                          </DropdownMenuRadioItem>
-                        </DropdownMenuRadioGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => {
-                      if (page === 1) {
-                        return;
-                      }
-                      handlePageChange(page - 1);
-                    }}
-                    href="#"
-                  />
-                </PaginationItem>
-                {Array.from({ length: totalPages }, (_, index) => index + 1)
-                  .filter(
-                    (p) =>
-                      p === 1 || p === totalPages || Math.abs(p - page) <= 2,
-                  )
-                  .map((p, i, arr) => {
-                    if (i > 0 && p - arr[i - 1] > 1) {
-                      return (
-                        <PaginationItem key={p}>
-                          <PaginationEllipsis />
-                        </PaginationItem>
-                      );
-                    }
-
-                    return (
-                      <PaginationItem key={p}>
-                        <PaginationLink
-                          isActive={p === page}
-                          href="#"
-                          onClick={() => handlePageChange(p)}
-                        >
-                          {p}
-                        </PaginationLink>
-                      </PaginationItem>
-                    );
-                  })}
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() => {
-                      if (page === totalPages) {
-                        return;
-                      }
-                      handlePageChange(page + 1);
-                    }}
-                    href="#"
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </DialogContent>
-        </Dialog>
+                          alt={response.volumeInfo.title}
+                          width="32"
+                          height="32"
+                        />
+                        <div>
+                          <p className="text-sm font-bold">
+                            {truncate(response.volumeInfo.title, 50)}
+                          </p>
+                          {response.volumeInfo.authors && (
+                            <p className="text-xs">
+                              by {response.volumeInfo.authors.join(", ")}
+                            </p>
+                          )}
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
         <ModeToggle />
-      </Container>
+      </ViewContainer>
     </header>
   );
 }

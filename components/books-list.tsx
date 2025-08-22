@@ -1,6 +1,6 @@
 "use client";
 
-import { Container } from "@/components/ui/container";
+import { SectionContainer, ViewContainer } from "@/components/layouts";
 import {
   Table,
   TableBody,
@@ -14,10 +14,10 @@ import { useBooks } from "@/context/books-provider";
 
 export default function BookList() {
   const { books } = useBooks();
-  
+
   return (
-    <section>
-      <Container>
+    <SectionContainer>
+      <ViewContainer>
         <Table>
           <TableCaption>A list of books</TableCaption>
           <TableHeader>
@@ -43,7 +43,7 @@ export default function BookList() {
             )}
           </TableBody>
         </Table>
-      </Container>
-    </section>
+      </ViewContainer>
+    </SectionContainer>
   );
 }
