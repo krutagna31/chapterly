@@ -1,9 +1,4 @@
-import BookList from "@/components/books-list";
-
-export default function Home() {
-  return (
-    <>
-    <BookList />
-   </>
-  );
+export default function HomePage() {
+  // list of books will be displayed on this page
+  return <></>;
 }
