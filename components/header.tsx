@@ -1,46 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import debounce from "lodash/debounce";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { ViewContainer } from "@/components/layouts";
-import { Button, Input, Label } from "@/components/ui";
+import { Button, Label } from "@/components/ui";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Search } from "lucide-react";
 
-interface Response {
+interface Result {
   id: string;
   volumeInfo: {
     title: string;
     authors?: string[];
-    imageLinks?: {
-      smallThumbnail: string;
-    };
+    // imageLinks: {
+    //   smallThumbnail: string;
+    // };
   };
 }
 
+/*
+  - when the input is empty
+  - when is loading is true
+  - when error is thrown
+  - when book is empty
+  debounce: user types boo: 3 api calls, wasteful, wait for 400ms after user stops typing and then make the api call. 
+*/
+
 export default function Header() {
-  const router = useRouter();
-  const [responses, setResponses] = useState<Response[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<Result[]>([]);
+  const [query, setQuery] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const router = useRouter();
 
-  const fetchBook = async (query: string) => {
-    setLoading(true);
-    const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`,
-    );
+  const debouncedFetch = useMemo(
+    () =>
+      debounce(async (query: string) => {
+        const response = await fetch(
+          `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`,
+        );
+        const data = await response.json();
+        setResults(data?.items || []);
+        setIsLoading(false);
+      }, 300),
+    [],
+  );
 
-    const data = await response.json();
-    console.log(data.totalItems);
-    setResponses(data.items || []);
-    setLoading(false);
-  };
+  useEffect(() => {
+    return () => {
+      debouncedFetch.cancel();
+    };
+  }, [debouncedFetch]);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const query = event.target.value;
-    fetchBook(query);
+  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newQuery = event.target.value.trim();
+    setQuery(newQuery);
+    if (newQuery.length === 0) {
+      setResults([]);
+      return;
+    }
+
+    setIsLoading(true);
+    debouncedFetch(newQuery);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -56,12 +80,12 @@ export default function Header() {
     <header className="py-4">
       <ViewContainer className="flex items-center justify-between">
         <Link href="#">Chapterly</Link>
-        <div className="bg-popover relative w-md">
-          <form className="flex border-b-1" onSubmit={handleSubmit}>
+        <div className="bg-popover relative w-md rounded-tl-md rounded-tr-md border-1">
+          <form className="flex" onSubmit={handleSubmit}>
             <Label className="sr-only">Search</Label>
-            <Input
-              className="!bg-popover w-full rounded-none border-0"
-              onChange={handleSearchChange}
+            <input
+              className="bg-popover w-full px-2 placeholder:text-sm"
+              onChange={handleQueryChange}
               onFocus={() => setIsFocused(true)}
               onBlur={() =>
                 setTimeout(() => {
@@ -69,43 +93,42 @@ export default function Header() {
                 }, 250)
               }
               type="text"
-              placeholder="Search for a book"
+              placeholder="The Hobbit..."
             />
-            <Button variant="ghost" size="icon">
+            <Button className="rounded-none" variant="ghost" size="icon">
               <Search />
             </Button>
           </form>
           {isFocused && (
-            <div className="bg-popover absolute top-[calc(100%+4px)] right-0 left-0 z-10 p-4">
-              {loading && (
-                <p className="py-6 text-center text-sm">Loading...</p>
-              )}
-              {!loading && responses.length === 0 && (
-                <p className="py-6 text-center text-xs">No results found.</p>
-              )}
-              {!loading && responses.length > 0 && (
+            <div className="absolute top-[calc(100%+2px)] right-0 left-0 z-10 rounded-br-md rounded-bl-md border-1 border-t-0 bg-inherit p-3">
+              {query.length === 0 ? (
+                <p className="text-center text-xs">Start searching</p>
+              ) : isLoading ? (
+                <p className="text-center text-xs">Loading...</p>
+              ) : results.length === 0 ? (
+                <p className="text-center text-xs">No books found</p>
+              ) : (
                 <ul className="space-y-4">
-                  {responses.map((response) => (
-                    <li key={response.id}>
+                  {results.map((result) => (
+                    <li key={result.id}>
                       <Link
                         className="flex items-center gap-4"
-                        href={`/${response.volumeInfo.title}`}
+                        href={`/${result.id}`}
                       >
-                        <Image
-                          src={
-                            response.volumeInfo.imageLinks?.smallThumbnail || ""
-                          }
-                          alt={response.volumeInfo.title}
-                          width="32"
-                          height="32"
-                        />
+                        {/* <Image
+                            src={
+                              response.volumeInfo.imageLinks.smallThumbnail ||
+                              ""
+                            }
+                            alt={response.volumeInfo.title}
+                          /> */}
                         <div>
                           <p className="text-sm font-bold">
-                            {truncate(response.volumeInfo.title, 50)}
+                            {truncate(result.volumeInfo.title, 50)}
                           </p>
-                          {response.volumeInfo.authors && (
+                          {result.volumeInfo.authors && (
                             <p className="text-xs">
-                              by {response.volumeInfo.authors.join(", ")}
+                              by {result.volumeInfo.authors.join(", ")}
                             </p>
                           )}
                         </div>
