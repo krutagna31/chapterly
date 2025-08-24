@@ -14,7 +14,7 @@ export type Book = {
     averageRating: number;
     ratingsCount: number;
     maturityRating: string;
-    imageLinks: {
+    imageLinks?: {
       smallThumbnail: string;
       thumbnail: string;
       small?: string;

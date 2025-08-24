@@ -1,29 +1,20 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import debounce from "lodash/debounce";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ViewContainer } from "@/components/layouts";
-import { Button, Label } from "@/components/ui";
-import { ModeToggle } from "@/components/mode-toggle";
-import { Search } from "lucide-react";
 import Image from "next/image";
+import debounce from "lodash/debounce";
+import { ViewContainer } from "@/components/layouts";
+import { Button, CustomLink, Label } from "@/components/ui";
+import { Search } from "lucide-react";
 import { Book } from "@/types";
+import { ModeToggle } from "@/components/mode-toggle";
 
-/*
-  - when the input is empty
-  - when is loading is true
-  - when error is thrown
-  - when book is empty
-  debounce: user types boo: 3 api calls, wasteful, wait for 400ms after user stops typing and then make the api call. 
-*/
-
-export default function Header() {
+function Header() {
   const [results, setResults] = useState<Book[]>([]);
   const [query, setQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
 
@@ -31,7 +22,7 @@ export default function Header() {
     () =>
       debounce(async (query: string) => {
         const response = await fetch(
-          `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`,
+          `${process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API}/volumes?q=${encodeURIComponent(query)}&maxResults=5`,
         );
         const data = await response.json();
         setResults(data?.items || []);
@@ -106,12 +97,15 @@ export default function Header() {
                         className="flex items-center gap-4"
                         href={`/${result.id}`}
                       >
-                        <div className="relative w-12 h-16">
+                        <div className="relative h-16 w-12">
                           <Image
-                            src={result.volumeInfo.imageLinks.smallThumbnail}
+                            src={
+                              result.volumeInfo.imageLinks?.smallThumbnail ||
+                              "/placeholder-64.png"
+                            }
                             alt={result.volumeInfo.title}
                             fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           />
                         </div>
                         <div>
@@ -127,6 +121,9 @@ export default function Header() {
                       </Link>
                     </li>
                   ))}
+                  <CustomLink className="text-center text-sm" href="/search">
+                    Show all results for {query}
+                  </CustomLink>
                 </ul>
               )}
             </div>
@@ -137,3 +134,5 @@ export default function Header() {
     </header>
   );
 }
+
+export { Header };
