@@ -8,17 +8,8 @@ import { ViewContainer } from "@/components/layouts";
 import { Button, Label } from "@/components/ui";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Search } from "lucide-react";
-
-interface Result {
-  id: string;
-  volumeInfo: {
-    title: string;
-    authors?: string[];
-    // imageLinks: {
-    //   smallThumbnail: string;
-    // };
-  };
-}
+import Image from "next/image";
+import { Book } from "@/types";
 
 /*
   - when the input is empty
@@ -29,7 +20,7 @@ interface Result {
 */
 
 export default function Header() {
-  const [results, setResults] = useState<Result[]>([]);
+  const [results, setResults] = useState<Book[]>([]);
   const [query, setQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   // const [error, setError] = useState<string | null>(null);
@@ -79,7 +70,7 @@ export default function Header() {
   return (
     <header className="py-4">
       <ViewContainer className="flex items-center justify-between">
-        <Link href="#">Chapterly</Link>
+        <Link href="/">Chapterly</Link>
         <div className="bg-popover relative w-md rounded-tl-md rounded-tr-md border-1">
           <form className="flex" onSubmit={handleSubmit}>
             <Label className="sr-only">Search</Label>
@@ -115,13 +106,14 @@ export default function Header() {
                         className="flex items-center gap-4"
                         href={`/${result.id}`}
                       >
-                        {/* <Image
-                            src={
-                              response.volumeInfo.imageLinks.smallThumbnail ||
-                              ""
-                            }
-                            alt={response.volumeInfo.title}
-                          /> */}
+                        <div className="relative w-12 h-16">
+                          <Image
+                            src={result.volumeInfo.imageLinks.smallThumbnail}
+                            alt={result.volumeInfo.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
+                          />
+                        </div>
                         <div>
                           <p className="text-sm font-bold">
                             {truncate(result.volumeInfo.title, 50)}

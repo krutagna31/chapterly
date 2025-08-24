@@ -6,7 +6,7 @@ function SectionContainer({
   ...props
 }: React.ComponentProps<"section">) {
   return (
-    <section className={clsx(className, "py-2")} {...props}>
+    <section className={clsx(className, "py-6")} {...props}>
       {children}
     </section>
   );
