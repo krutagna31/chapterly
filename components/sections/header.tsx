@@ -6,12 +6,21 @@ import Link from "next/link";
 import Image from "next/image";
 import debounce from "lodash/debounce";
 import { ViewContainer } from "@/components/layouts";
-import { Button, CustomLink, Label } from "@/components/ui";
-import { Search } from "lucide-react";
+import {
+  Button,
+  CustomLink,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Label,
+} from "@/components/ui";
+import { Moon, Search, Sun } from "lucide-react";
 import { Book } from "@/types";
-import { ModeToggle } from "@/components/mode-toggle";
+import { useTheme } from "next-themes";
 
 function Header() {
+  const { setTheme } = useTheme();
   const [results, setResults] = useState<Book[]>([]);
   const [query, setQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -101,7 +110,7 @@ function Header() {
                           <Image
                             src={
                               result.volumeInfo.imageLinks?.smallThumbnail ||
-                              "/placeholder-64.png"
+                              "/images/placeholder-64.png"
                             }
                             alt={result.volumeInfo.title}
                             fill
@@ -129,7 +138,26 @@ function Header() {
             </div>
           )}
         </div>
-        <ModeToggle />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+              <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setTheme("light")}>
+              Light
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("dark")}>
+              Dark
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("system")}>
+              System
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </ViewContainer>
     </header>
   );
