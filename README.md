@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Chapterly
+
+An minimalist online library app to search, view, and manage books.
+
+## Table of contents
+
+- [Overview](#overview)
+  - [Screenshot](#screenshot)
+  - [Links](#links)
+- [My process](#my-process)
+  - [Built with](#built-with)
+  - [Continued development](#continued-development)
+- [Getting Started](#getting-started)
+  - [Cloning the repository](#cloning-the-repository)
+  - [Installing Dependencies](#installing-dependencies)
+  - [Running the Development Server](#running-the-development-server)
+- [Author](#author)
+- [Acknowledgments](#acknowledgments)
+
+## Overview
+
+<!-- ### Screenshot -->
+
+<!-- ![](./screenshot.jpg) -->
+
+### Links
+
+- Live Site URL: [Add live site URL here](https://chapterly-31.vercel.app/)
+
+## My process
+
+### Built with
+
+- [React](https://reactjs.org/)
+- [Next.js](https://nextjs.org/)
+- [Typescript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Shadcn/UI](https://ui.shadcn.com/)
+
+### Continued development
+
+Use this section to outline areas that you want to continue focusing on in future projects. These could be concepts you're still not completely comfortable with or techniques you found useful that you want to refine and perfect.
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to get a copy of the project up and running on your local machine.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Cloning the repository
+
+```sh
+git clone https://github.com/krutagna31/nextjs-shadcn-template.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installing dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+cd nextjs-template
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Running the development server
 
-## Learn More
+```sh
+  npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Website - [Krutagna Patel](https://www.your-site.com)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Acknowledgments
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This is where you can give a hat tip to anyone who helped you out on this project. Perhaps you worked in a team or got some inspiration from someone else's solution. This is the perfect place to give them some credit.
