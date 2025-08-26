@@ -48,13 +48,13 @@ Follow these steps to get a copy of the project up and running on your local mac
 ### Cloning the repository
 
 ```sh
-git clone https://github.com/krutagna31/nextjs-shadcn-template.git
+git clone https://github.com/krutagna31/chapterly.git
 ```
 
 ### Installing dependencies
 
 ```sh
-cd nextjs-template
+cd chapterly
 npm install
 ```
 
@@ -66,7 +66,7 @@ npm install
 
 ## Author
 
-- Website - [Krutagna Patel](https://www.your-site.com)
+- Website - [Krutagna Patel](https://flowcv.me/krutagna-patel)
 
 ## Acknowledgments
 
