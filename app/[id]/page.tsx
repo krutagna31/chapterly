@@ -6,6 +6,7 @@ export default async function BookPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  console.log(params);
   // const { id } = await params;
 
   // const response = await fetch(
