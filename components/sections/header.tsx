@@ -2,10 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
+import { useTheme } from "next-themes";
 import debounce from "lodash/debounce";
 import { ViewContainer } from "@/components/layouts";
+import Image from "next/image";
+import Link from "next/link";
 import {
   Button,
   CustomLink,
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui";
 import { Moon, Search, Sun } from "lucide-react";
 import { Book } from "@/types";
-import { useTheme } from "next-themes";
 
 function Header() {
   const { setTheme } = useTheme();
