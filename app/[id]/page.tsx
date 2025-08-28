@@ -1,4 +1,5 @@
-import { BookHeader, BookOverview } from "@/app/[id]/_components/sections";
+import { Author, Banner, Edition } from "@/app/[id]/_components/sections";
+import { ViewContainer } from "@/components/layouts";
 // import { Book } from "@/types";
 
 export default async function BookPage({
@@ -16,8 +17,11 @@ export default async function BookPage({
 
   return (
     <>
-      <BookHeader />
-      <BookOverview />
+      <Banner />
+      <ViewContainer className="grid md:grid-cols-[70fr_30fr] gap-x-6">
+        <Edition />
+        <Author />
+      </ViewContainer>
     </>
   );
 }

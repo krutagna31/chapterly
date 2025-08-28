@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 function CustomLink({
@@ -8,7 +8,7 @@ function CustomLink({
 }: React.ComponentProps<typeof Link>) {
   return (
     <Link
-      className={clsx(className, "text-sky-600 hover:underline")}
+      className={cn(className, "text-sky-600 hover:underline")}
       {...props}
     >
       {children}

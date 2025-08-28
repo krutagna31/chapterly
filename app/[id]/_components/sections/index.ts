@@ -1,2 +1,3 @@
-export * from "./book-header";
-export * from "./book-overview";
+export * from "./author";
+export * from "./banner";
+export * from "./edition";

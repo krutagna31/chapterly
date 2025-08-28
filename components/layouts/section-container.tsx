@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 function SectionContainer({
   className,
@@ -6,7 +6,7 @@ function SectionContainer({
   ...props
 }: React.ComponentProps<"section">) {
   return (
-    <section className={clsx(className, "py-6")} {...props}>
+    <section className={cn(className, "py-6")} {...props}>
       {children}
     </section>
   );
