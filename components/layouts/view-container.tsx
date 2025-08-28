@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 function ViewContainer({
   children,
@@ -6,7 +6,7 @@ function ViewContainer({
   ...props
 }: React.ComponentProps<"div">) {
   return (
-    <div className={clsx(className, "mx-auto max-w-7xl px-4")} {...props}>
+    <div className={cn(className, "mx-auto max-w-7xl px-4")} {...props}>
       {children}
     </div>
   );
