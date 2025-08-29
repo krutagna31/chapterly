@@ -110,7 +110,7 @@ function Header() {
                           <Image
                             src={
                               result.volumeInfo.imageLinks?.smallThumbnail ||
-                              "/images/placeholder-64.png"
+                              "/images/no-image-placeholder-64.png"
                             }
                             alt={result.volumeInfo.title}
                             fill
