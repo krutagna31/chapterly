@@ -25,7 +25,15 @@ export default async function BookPage({
         previewLink={volumeInfo.previewLink}
       />
       <ViewContainer>
-        <Edition />
+        <Edition
+          publisher={volumeInfo.publisher}
+          publishedDate={volumeInfo.publishedDate}
+          industryIdentifiers={volumeInfo.industryIdentifiers}
+          description={volumeInfo.description}
+          pageCount={volumeInfo.pageCount}
+          printType={volumeInfo.printType}
+          language={volumeInfo.language}
+        />
       </ViewContainer>
       {/* <ViewContainer className="grid gap-x-6 lg:grid-cols-[70fr_30fr]">
         <Author />

@@ -21,8 +21,6 @@ function Banner({
   | "imageLinks"
   | "previewLink"
 >) {
-  console.log(new Date(publishedDate));
-
   return (
     <SectionContainer>
       <ViewContainer className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
@@ -40,9 +38,11 @@ function Banner({
               </Fragment>
             ))}
             <span className="text-muted-foreground"> · </span>
-            <span className="text-muted-foreground">
-              {new Date(publishedDate).getFullYear()}
-            </span>
+            {publishedDate && (
+              <span className="text-muted-foreground">
+                {new Date(publishedDate).getFullYear()}
+              </span>
+            )}
           </p>
           <div className="space-x-2">
             <Button size="lg">Want to Read</Button>

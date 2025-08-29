@@ -6,7 +6,7 @@ export type Book = {
     authors?: string[];
     publisher: string;
     publishedDate: string;
-    industryIdentifiers: { type: string; identifier: string }[];
+    industryIdentifiers?: { type: string; identifier: string }[];
     description?: string;
     pageCount: number;
     printedPageCount: number;
