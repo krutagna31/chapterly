@@ -2,6 +2,7 @@ export type Book = {
   id: string;
   volumeInfo: {
     title: string;
+    subtitle?: string;
     authors?: string[];
     publisher: string;
     publishedDate: string;

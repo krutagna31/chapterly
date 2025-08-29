@@ -69,7 +69,7 @@ function Header() {
 
   return (
     <header className="py-4">
-      <ViewContainer className="flex items-center justify-between">
+      <ViewContainer className="flex items-center justify-between gap-4">
         <Link href="/">Chapterly</Link>
         <div className="bg-popover relative w-md rounded-tl-md rounded-tr-md border-1">
           <form className="flex" onSubmit={handleSubmit}>
@@ -113,8 +113,8 @@ function Header() {
                               "/images/no-image-placeholder-64.png"
                             }
                             alt={result.volumeInfo.title}
-                            fill
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            fill
                           />
                         </div>
                         <div>

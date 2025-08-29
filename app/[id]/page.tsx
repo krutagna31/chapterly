@@ -1,27 +1,35 @@
-import { Author, Banner, Edition } from "@/app/[id]/_components/sections";
 import { ViewContainer } from "@/components/layouts";
-// import { Book } from "@/types";
+import { Banner, Edition } from "@/app/[id]/_components/sections";
+import { Book } from "@/types";
 
 export default async function BookPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  console.log(params);
-  // const { id } = await params;
+  const { id } = await params;
 
-  // const response = await fetch(
-  //   `https://www.googleapis.com/books/v1/volumes/${id}`,
-  // );
-  // const book: Book = await response.json();
+  const response = await fetch(
+    `https://www.googleapis.com/books/v1/volumes/${id}`,
+  );
+  const { volumeInfo }: Book = await response.json();
 
   return (
     <>
-      <Banner />
-      <ViewContainer className="grid md:grid-cols-[70fr_30fr] gap-x-6">
+      <Banner
+        title={volumeInfo.title}
+        subtitle={volumeInfo.subtitle}
+        authors={volumeInfo.authors}
+        publishedDate={volumeInfo.publishedDate}
+        imageLinks={volumeInfo.imageLinks}
+        previewLink={volumeInfo.previewLink}
+      />
+      <ViewContainer>
         <Edition />
-        <Author />
       </ViewContainer>
+      {/* <ViewContainer className="grid gap-x-6 lg:grid-cols-[70fr_30fr]">
+        <Author />
+      </ViewContainer> */}
     </>
   );
 }
