@@ -4,17 +4,17 @@ export type Book = {
     title: string;
     subtitle?: string;
     authors?: string[];
-    publisher: string;
-    publishedDate: string;
+    publisher?: string;
+    publishedDate?: string;
     industryIdentifiers?: { type: string; identifier: string }[];
     description?: string;
-    pageCount: number;
-    printedPageCount: number;
-    printType: string;
-    categories: string[];
-    averageRating: number;
-    ratingsCount: number;
-    maturityRating: string;
+    pageCount?: number;
+    printedPageCount?: number;
+    printType?: string;
+    categories?: string[];
+    averageRating?: number;
+    ratingsCount?: number;
+    maturityRating?: string;
     imageLinks?: {
       smallThumbnail: string;
       thumbnail: string;
@@ -22,7 +22,7 @@ export type Book = {
       medium?: string;
       large?: string;
     };
-    language: string;
+    language?: string;
     previewLink: string;
     infoLink: string;
     canonicalVolumeLink: string;

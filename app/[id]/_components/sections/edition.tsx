@@ -68,12 +68,14 @@ function Edition({
             </li>
           )}
         </ul>
-        <Separator />
         {description && (
-          <div
-            className="text-sm"
-            dangerouslySetInnerHTML={{ __html: description }}
-          ></div>
+          <>
+            <Separator />
+            <div
+              className="text-sm"
+              dangerouslySetInnerHTML={{ __html: description }}
+            ></div>
+          </>
         )}
       </div>
     </SectionContainer>

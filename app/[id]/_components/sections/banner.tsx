@@ -4,6 +4,7 @@ import { Button, CustomLink } from "@/components/ui";
 import { Book } from "@/types";
 import Link from "next/link";
 import { Fragment } from "react";
+import { Bookmark, ScanEye } from "lucide-react";
 
 function Banner({
   title,
@@ -29,30 +30,43 @@ function Banner({
           {subtitle && (
             <p className="text-muted-foreground text-xl italic">{subtitle}</p>
           )}
-          <p>
-            <span>by </span>
-            {authors?.map((author, index) => (
-              <Fragment key={author}>
-                <CustomLink href="/">{author}</CustomLink>
-                {index < authors.length - 1 && <span>, </span>}
-              </Fragment>
-            ))}
-            <span className="text-muted-foreground"> · </span>
-            {publishedDate && (
-              <span className="text-muted-foreground">
-                {new Date(publishedDate).getFullYear()}
-              </span>
+          <div className="flex gap-1">
+            {authors && (
+              <p>
+                <span>by </span>
+                {authors.map((author, index) => (
+                  <Fragment key={author}>
+                    <CustomLink href="/">{author}</CustomLink>
+                    {index < authors.length - 1 && <span>, </span>}
+                  </Fragment>
+                ))}
+              </p>
             )}
-          </p>
+            {authors && publishedDate && (
+              <p className="text-muted-foreground"> · </p>
+            )}
+            {publishedDate && (
+              <p className="text-muted-foreground">
+                {new Date(publishedDate).getFullYear()}
+              </p>
+            )}
+          </div>
           <div className="space-x-2">
-            <Button size="lg">Want to Read</Button>
-            <Button variant="secondary" size="lg" asChild>
-              <Link href={previewLink}>Preview</Link>
+            <Button size="lg">
+              <Bookmark />
+              <span>Want to read</span>
+            </Button>
+            <Button disabled variant="secondary" size="lg" asChild>
+              <Link href={previewLink}>
+                <ScanEye />
+                <span>Preview</span>
+              </Link>
             </Button>
           </div>
         </div>
         <div className="relative h-48 w-32">
           <Image
+            className="rounded-sm"
             src={
               imageLinks?.thumbnail || "/images/no-image-placeholder-256.png"
             }

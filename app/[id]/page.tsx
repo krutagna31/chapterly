@@ -10,7 +10,7 @@ export default async function BookPage({
   const { id } = await params;
 
   const response = await fetch(
-    `https://www.googleapis.com/books/v1/volumes/${id}`,
+    `${process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API}/volumes/${id}`,
   );
   const { volumeInfo }: Book = await response.json();
 
