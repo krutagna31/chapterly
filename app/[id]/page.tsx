@@ -18,7 +18,7 @@ export default async function BookPage({
   return (
     <>
       <Banner />
-      <ViewContainer className="grid grid-cols-[70fr_30fr] gap-x-6">
+      <ViewContainer className="grid md:grid-cols-[70fr_30fr] gap-x-6">
         <Edition />
         <Author />
       </ViewContainer>
