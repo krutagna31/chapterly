@@ -5,7 +5,7 @@ function Edition() {
   return (
     <SectionContainer>
       <h2>About the edition</h2>
-      <div className="rounded-md border p-4 space-y-4">
+      <div className="space-y-4 rounded-md border p-4">
         <ul className="grid grid-cols-2 gap-2">
           <li className="text-muted-foreground text-sm">
             ISBN: <span>9780553381702, 0553381709</span>
