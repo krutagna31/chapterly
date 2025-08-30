@@ -30,7 +30,7 @@ function Banner({
           {subtitle && (
             <p className="text-muted-foreground text-xl italic">{subtitle}</p>
           )}
-          <div className="flex gap-1">
+          <div className="flex gap-1 justify-center md:justify-start">
             {authors && (
               <p>
                 <span>by </span>

@@ -9,7 +9,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Button,
-  CustomLink,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -19,9 +18,9 @@ import {
 import { Moon, Search, Sun } from "lucide-react";
 import { Book } from "@/types";
 
-function Header() {
+function SiteHeader() {
   const { setTheme } = useTheme();
-  const [results, setResults] = useState<Book[]>([]);
+  const [books, setBooks] = useState<Book[]>([]);
   const [query, setQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -34,7 +33,7 @@ function Header() {
           `${process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API}/volumes?q=${encodeURIComponent(query)}&maxResults=5`,
         );
         const data = await response.json();
-        setResults(data?.items || []);
+        setBooks(data?.items || []);
         setIsLoading(false);
       }, 300),
     [],
@@ -50,7 +49,7 @@ function Header() {
     const newQuery = event.target.value.trim();
     setQuery(newQuery);
     if (newQuery.length === 0) {
-      setResults([]);
+      setBooks([]);
       return;
     }
 
@@ -60,18 +59,36 @@ function Header() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    router.push("/search");
-  };
-
-  const truncate = (str: string, maxLength: number) => {
-    return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
+    router.push(`/search?q=${query}`);
   };
 
   return (
     <header className="py-4">
-      <ViewContainer className="flex items-center justify-between gap-4">
-        <Link href="/">Chapterly</Link>
-        <div className="bg-popover relative w-md rounded-tl-md rounded-tr-md border-1">
+      <ViewContainer className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Link href="/">Chapterly</Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+                <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+                <span className="sr-only">Toggle theme</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setTheme("light")}>
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("dark")}>
+                Dark
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("system")}>
+                System
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="bg-popover relative mx-auto max-w-md rounded-tl-md rounded-tr-md border-1">
           <form className="flex" onSubmit={handleSubmit}>
             <Label className="sr-only">Search</Label>
             <input
@@ -96,71 +113,47 @@ function Header() {
                 <p className="text-center text-xs">Start searching</p>
               ) : isLoading ? (
                 <p className="text-center text-xs">Loading...</p>
-              ) : results.length === 0 ? (
+              ) : books.length === 0 ? (
                 <p className="text-center text-xs">No books found</p>
               ) : (
                 <ul className="space-y-4">
-                  {results.map((result) => (
-                    <li key={result.id}>
-                      <Link
-                        className="flex items-center gap-4"
-                        href={`/${result.id}`}
-                      >
-                        <div className="relative h-16 w-12">
+                  {books.map(({ id, volumeInfo }) => (
+                    <li key={id}>
+                      <Link className="flex items-center gap-4" href={`/${id}`}>
+                        <div className="relative h-16 w-12 shrink-0">
                           <Image
                             src={
-                              result.volumeInfo.imageLinks?.smallThumbnail ||
+                              volumeInfo.imageLinks?.smallThumbnail ||
                               "/images/no-image-placeholder-64.png"
                             }
-                            alt={result.volumeInfo.title}
+                            alt={volumeInfo.title}
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             fill
                           />
                         </div>
                         <div>
                           <p className="text-sm font-bold">
-                            {truncate(result.volumeInfo.title, 50)}
+                            {volumeInfo.title.length > 50
+                              ? volumeInfo.title.slice(0, 50) + "..."
+                              : volumeInfo.title}
                           </p>
-                          {result.volumeInfo.authors && (
+                          {volumeInfo.authors && (
                             <p className="text-xs">
-                              by {result.volumeInfo.authors.join(", ")}
+                              by {volumeInfo.authors.join(", ")}
                             </p>
                           )}
                         </div>
                       </Link>
                     </li>
                   ))}
-                  <CustomLink className="text-center text-sm" href="/search">
-                    Show all results for {query}
-                  </CustomLink>
                 </ul>
               )}
             </div>
           )}
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
-              <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-              <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setTheme("light")}>
-              Light
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("dark")}>
-              Dark
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("system")}>
-              System
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </ViewContainer>
     </header>
   );
 }
 
-export { Header };
+export { SiteHeader };

@@ -4,23 +4,11 @@ An minimalist online library app to search, view, and manage books.
 
 ## Table of contents
 
-- [My process](#my-process)
-  - [Built with](#built-with)
 - [Getting Started](#getting-started)
   - [Cloning the repository](#cloning-the-repository)
   - [Installing Dependencies](#installing-dependencies)
   - [Running the Development Server](#running-the-development-server)
 - [Author](#author)
-- [Acknowledgments](#acknowledgments)
-
-## My process
-
-### Built with
-
-- [Next.js](https://nextjs.org/)
-- [Typescript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Shadcn/UI](https://ui.shadcn.com/)
 
 ## Getting Started
 
@@ -42,7 +30,7 @@ npm install
 ### Running the development server
 
 ```sh
-  npm run dev
+npm run dev
 ```
 
 ## Author

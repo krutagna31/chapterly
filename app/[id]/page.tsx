@@ -1,5 +1,5 @@
 import { ViewContainer } from "@/components/layouts";
-import { Banner, Edition } from "@/app/[id]/_components/sections";
+import { Banner, Edition } from "@/app/[id]/_components";
 import { Book } from "@/types";
 
 export default async function BookPage({
@@ -35,9 +35,6 @@ export default async function BookPage({
           language={volumeInfo.language}
         />
       </ViewContainer>
-      {/* <ViewContainer className="grid gap-x-6 lg:grid-cols-[70fr_30fr]">
-        <Author />
-      </ViewContainer> */}
     </>
   );
 }
