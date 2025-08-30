@@ -21,7 +21,7 @@ import { Book } from "@/types";
 
 function Header() {
   const { setTheme } = useTheme();
-  const [results, setResults] = useState<Book[]>([]);
+  const [books, setBooks] = useState<Book[]>([]);
   const [query, setQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -34,7 +34,7 @@ function Header() {
           `${process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API}/volumes?q=${encodeURIComponent(query)}&maxResults=5`,
         );
         const data = await response.json();
-        setResults(data?.items || []);
+        setBooks(data?.items || []);
         setIsLoading(false);
       }, 300),
     [],
@@ -50,7 +50,7 @@ function Header() {
     const newQuery = event.target.value.trim();
     setQuery(newQuery);
     if (newQuery.length === 0) {
-      setResults([]);
+      setBooks([]);
       return;
     }
 
@@ -96,34 +96,31 @@ function Header() {
                 <p className="text-center text-xs">Start searching</p>
               ) : isLoading ? (
                 <p className="text-center text-xs">Loading...</p>
-              ) : results.length === 0 ? (
+              ) : books.length === 0 ? (
                 <p className="text-center text-xs">No books found</p>
               ) : (
                 <ul className="space-y-4">
-                  {results.map((result) => (
-                    <li key={result.id}>
-                      <Link
-                        className="flex items-center gap-4"
-                        href={`/${result.id}`}
-                      >
+                  {books.map(({ id, volumeInfo }) => (
+                    <li key={id}>
+                      <Link className="flex items-center gap-4" href={`/${id}`}>
                         <div className="relative h-16 w-12">
                           <Image
                             src={
-                              result.volumeInfo.imageLinks?.smallThumbnail ||
+                              volumeInfo.imageLinks?.smallThumbnail ||
                               "/images/no-image-placeholder-64.png"
                             }
-                            alt={result.volumeInfo.title}
+                            alt={volumeInfo.title}
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             fill
                           />
                         </div>
                         <div>
                           <p className="text-sm font-bold">
-                            {truncate(result.volumeInfo.title, 50)}
+                            {truncate(volumeInfo.title, 50)}
                           </p>
-                          {result.volumeInfo.authors && (
+                          {volumeInfo.authors && (
                             <p className="text-xs">
-                              by {result.volumeInfo.authors.join(", ")}
+                              by {volumeInfo.authors.join(", ")}
                             </p>
                           )}
                         </div>
