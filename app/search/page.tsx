@@ -1,7 +1,10 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 export default function SearchPage() {
-  return (
-    <>
-      <h1>this is search page.</h1>
-    </>
-  );
+  const val = useRouter();
+  console.log(val);
+
+  return <></>;
 }

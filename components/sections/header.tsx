@@ -60,18 +60,36 @@ function Header() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    router.push("/search");
-  };
-
-  const truncate = (str: string, maxLength: number) => {
-    return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
+    router.push(`/search?q=abook`);
   };
 
   return (
     <header className="py-4">
-      <ViewContainer className="flex items-center justify-between gap-4">
-        <Link href="/">Chapterly</Link>
-        <div className="bg-popover relative w-md rounded-tl-md rounded-tr-md border-1">
+      <ViewContainer className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Link href="/">Chapterly</Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+                <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+                <span className="sr-only">Toggle theme</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setTheme("light")}>
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("dark")}>
+                Dark
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("system")}>
+                System
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="bg-popover relative mx-auto max-w-md rounded-tl-md rounded-tr-md border-1">
           <form className="flex" onSubmit={handleSubmit}>
             <Label className="sr-only">Search</Label>
             <input
@@ -103,7 +121,7 @@ function Header() {
                   {books.map(({ id, volumeInfo }) => (
                     <li key={id}>
                       <Link className="flex items-center gap-4" href={`/${id}`}>
-                        <div className="relative h-16 w-12">
+                        <div className="relative h-16 w-12 shrink-0">
                           <Image
                             src={
                               volumeInfo.imageLinks?.smallThumbnail ||
@@ -116,7 +134,9 @@ function Header() {
                         </div>
                         <div>
                           <p className="text-sm font-bold">
-                            {truncate(volumeInfo.title, 50)}
+                            {volumeInfo.title.length > 50
+                              ? volumeInfo.title.slice(0, 50) + "..."
+                              : volumeInfo.title}
                           </p>
                           {volumeInfo.authors && (
                             <p className="text-xs">
@@ -135,26 +155,6 @@ function Header() {
             </div>
           )}
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
-              <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-              <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setTheme("light")}>
-              Light
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("dark")}>
-              Dark
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("system")}>
-              System
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </ViewContainer>
     </header>
   );
