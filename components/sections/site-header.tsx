@@ -9,7 +9,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Button,
-  CustomLink,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -19,7 +18,7 @@ import {
 import { Moon, Search, Sun } from "lucide-react";
 import { Book } from "@/types";
 
-function Header() {
+function SiteHeader() {
   const { setTheme } = useTheme();
   const [books, setBooks] = useState<Book[]>([]);
   const [query, setQuery] = useState<string>("");
@@ -60,7 +59,7 @@ function Header() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    router.push(`/search?q=abook`);
+    router.push(`/search?q=${query}`);
   };
 
   return (
@@ -147,9 +146,6 @@ function Header() {
                       </Link>
                     </li>
                   ))}
-                  <CustomLink className="text-center text-sm" href="/search">
-                    Show all results for {query}
-                  </CustomLink>
                 </ul>
               )}
             </div>
@@ -160,4 +156,4 @@ function Header() {
   );
 }
 
-export { Header };
+export { SiteHeader };

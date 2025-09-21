@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from "@/context/theme-provider";
-import { Header } from "@/components/sections";
+import { SiteHeader } from "@/components/sections";
 import "./globals.css";
 
 const josefinSans = Josefin_Sans({
@@ -27,7 +27,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
+          <SiteHeader />
           <main>{children}</main>
         </ThemeProvider>
       </body>
