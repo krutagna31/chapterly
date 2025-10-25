@@ -1,23 +1,23 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import debounce from "lodash/debounce";
 import { Search } from "lucide-react";
 import { Button, Label } from "@/components/ui";
-import { Book } from "@/types";
+import { Volume } from "@/types";
 
 type Response = {
-  items: Book[];
+  items: Volume[];
   kind: string;
   totalItems: number;
 };
 
-function BookSearch() {
-  const router = useRouter();
+function VolumeSearch() {
+  // const router = useRouter();
   const [query, setQuery] = useState<string>("");
   const [debouncedQuery, setDebouncedQuery] = useState<string>("");
   const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -67,7 +67,7 @@ function BookSearch() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    router.push(`/search?q=${query}`);
+    // router.push(`/search?q=${query}`);
   };
 
   return (
@@ -100,12 +100,15 @@ function BookSearch() {
           ) : status === "error" ? (
             <p className="text-center text-xs text-red-500">{error.message}</p>
           ) : data.totalItems === 0 ? (
-            <p className="text-center text-xs">No books found</p>
+            <p className="text-center text-xs">No volumes found</p>
           ) : (
             <ul className="space-y-4">
               {data.items.map(({ id, volumeInfo }) => (
                 <li key={id}>
-                  <Link className="flex items-center gap-4" href={`/${id}`}>
+                  <Link
+                    className="flex items-center gap-4"
+                    href={`/volume/${id}`}
+                  >
                     <div className="relative h-16 w-12 shrink-0">
                       <Image
                         src={
@@ -140,4 +143,4 @@ function BookSearch() {
   );
 }
 
-export { BookSearch };
+export { VolumeSearch as VolumeSearch };

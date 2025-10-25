@@ -1,9 +1,9 @@
-import { BookSearch } from "@/app/_components/book-search";
+import { VolumeSearch } from "@/app/_components/volumes-search";
 
 export default function HomePage() {
   return (
     <>
-      <BookSearch />
+      <VolumeSearch />
     </>
   );
 }

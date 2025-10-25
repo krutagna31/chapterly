@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { SectionContainer, ViewContainer } from "@/components/layouts";
 import { Button, CustomLink } from "@/components/ui";
-import { Book } from "@/types";
+import { VolumeInfo } from "@/types";
 import Link from "next/link";
 import { Fragment } from "react";
 import { Bookmark, ScanEye } from "lucide-react";
@@ -13,15 +13,7 @@ function Banner({
   publishedDate,
   imageLinks,
   previewLink,
-}: Pick<
-  Book["volumeInfo"],
-  | "title"
-  | "subtitle"
-  | "authors"
-  | "publishedDate"
-  | "imageLinks"
-  | "previewLink"
->) {
+}: Pick<VolumeInfo, "title" | 'subtitle' | "authors" | "publishedDate" | "imageLinks" | "previewLink">) {
   return (
     <SectionContainer>
       <ViewContainer className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
@@ -57,14 +49,14 @@ function Banner({
               <span>Want to read</span>
             </Button>
             <Button disabled variant="secondary" size="lg" asChild>
-              <Link href={previewLink}>
+              <Link href={previewLink} target="_blank">
                 <ScanEye />
                 <span>Preview</span>
               </Link>
             </Button>
           </div>
         </div>
-        <div className="relative h-48 w-32">
+        <div className="relative h-48 w-32 shrink-0">
           <Image
             className="rounded-sm"
             src={

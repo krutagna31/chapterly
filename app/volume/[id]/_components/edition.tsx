@@ -1,6 +1,6 @@
 import { SectionContainer } from "@/components/layouts";
 import { CustomLink, Separator } from "@/components/ui";
-import { Book } from "@/types";
+import { VolumeInfo } from "@/types";
 
 function Edition({
   publisher,
@@ -11,7 +11,7 @@ function Edition({
   printType,
   language,
 }: Pick<
-  Book["volumeInfo"],
+  VolumeInfo,
   | "publisher"
   | "publishedDate"
   | "industryIdentifiers"
