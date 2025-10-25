@@ -3,6 +3,7 @@ import { Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from "@/context";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
+import { QueryProvider } from "@/context/query-provider";
 
 const josefinSans = Josefin_Sans({
   subsets: ["latin"],
@@ -27,8 +28,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SiteHeader />
-          <main>{children}</main>
+          <QueryProvider>
+            <SiteHeader />
+            <main>{children}</main>
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

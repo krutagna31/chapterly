@@ -2,57 +2,75 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import debounce from "lodash/debounce";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Button, Label
-} from "@/components/ui";
+import { useQuery } from "@tanstack/react-query";
+import debounce from "lodash/debounce";
 import { Search } from "lucide-react";
+import { Button, Label } from "@/components/ui";
 import { Book } from "@/types";
 
-function BookSearch() {
-  const [books, setBooks] = useState<Book[]>([]);
-  const [query, setQuery] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-  const router = useRouter();
+type Response = {
+  items: Book[];
+  kind: string;
+  totalItems: number;
+};
 
-  const debouncedFetch = useMemo(
-    () =>
-      debounce(async (query: string) => {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API}/volumes?q=${encodeURIComponent(query)}&maxResults=5`,
+function BookSearch() {
+  const router = useRouter();
+  const [query, setQuery] = useState<string>("");
+  const [debouncedQuery, setDebouncedQuery] = useState<string>("");
+  const [isFocused, setIsFocused] = useState<boolean>(false);
+
+  const { data, status, error } = useQuery<Response>({
+    queryKey: ["search", debouncedQuery],
+    queryFn: async () => {
+      console.log("running");
+      const url = new URL(
+        `${process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API}/volumes`,
+      );
+      url.searchParams.set("q", encodeURIComponent(debouncedQuery));
+      url.searchParams.set("maxResults", "5");
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(
+          `Request Failed: ${response.status} ${response.statusText}`,
         );
-        const data = await response.json();
-        setBooks(data?.items || []);
-        setIsLoading(false);
+      }
+      return response.json();
+    },
+    enabled: !!debouncedQuery,
+  });
+
+  const handleDebouncedQueryChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        setDebouncedQuery(value.trim());
       }, 300),
     [],
   );
 
   useEffect(() => {
     return () => {
-      debouncedFetch.cancel();
+      handleDebouncedQueryChange.cancel();
     };
-  }, [debouncedFetch]);
+  }, [handleDebouncedQueryChange]);
 
-  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newQuery = event.target.value.trim();
+  const handleQueryChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): void => {
+    const newQuery = event.target.value;
     setQuery(newQuery);
-    if (newQuery.length === 0) {
-      setBooks([]);
-      return;
-    }
-
-    setIsLoading(true);
-    debouncedFetch(newQuery);
+    handleDebouncedQueryChange(newQuery);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     router.push(`/search?q=${query}`);
   };
+
+  console.log(data);
 
   return (
     <div className="bg-popover relative mx-auto max-w-md rounded-tl-md rounded-tr-md border-1">
@@ -69,6 +87,7 @@ function BookSearch() {
           }
           type="text"
           placeholder="The Hobbit..."
+          value={query}
         />
         <Button className="rounded-none" variant="ghost" size="icon">
           <Search />
@@ -78,13 +97,15 @@ function BookSearch() {
         <div className="absolute top-[calc(100%+2px)] right-0 left-0 z-10 rounded-br-md rounded-bl-md border-1 border-t-0 bg-inherit p-3">
           {query.length === 0 ? (
             <p className="text-center text-xs">Start searching</p>
-          ) : isLoading ? (
+          ) : status === "pending" ? (
             <p className="text-center text-xs">Loading...</p>
-          ) : books.length === 0 ? (
+          ) : status === "error" ? (
+            <p className="text-center text-xs text-red-500">{error.message}</p>
+          ) : data.totalItems === 0 ? (
             <p className="text-center text-xs">No books found</p>
           ) : (
             <ul className="space-y-4">
-              {books.map(({ id, volumeInfo }) => (
+              {data.items.map(({ id, volumeInfo }) => (
                 <li key={id}>
                   <Link className="flex items-center gap-4" href={`/${id}`}>
                     <div className="relative h-16 w-12 shrink-0">
