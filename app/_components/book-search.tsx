@@ -29,7 +29,7 @@ function BookSearch() {
       const url = new URL(
         `${process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API}/volumes`,
       );
-      url.searchParams.set("q", encodeURIComponent(debouncedQuery));
+      url.searchParams.set("q", debouncedQuery);
       url.searchParams.set("maxResults", "5");
       const response = await fetch(url);
 
@@ -46,7 +46,7 @@ function BookSearch() {
   const handleDebouncedQueryChange = useMemo(
     () =>
       debounce((value: string) => {
-        setDebouncedQuery(value.trim());
+        setDebouncedQuery(value);
       }, 300),
     [],
   );
@@ -60,7 +60,7 @@ function BookSearch() {
   const handleQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ): void => {
-    const newQuery = event.target.value;
+    const newQuery = event.target.value.trimStart();
     setQuery(newQuery);
     handleDebouncedQueryChange(newQuery);
   };
@@ -69,8 +69,6 @@ function BookSearch() {
     event.preventDefault();
     router.push(`/search?q=${query}`);
   };
-
-  console.log(data);
 
   return (
     <div className="bg-popover relative mx-auto max-w-md rounded-tl-md rounded-tr-md border-1">
