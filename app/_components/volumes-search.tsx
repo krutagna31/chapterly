@@ -92,7 +92,7 @@ function VolumeSearch() {
         </Button>
       </form>
       {isFocused && (
-        <div className="absolute top-[calc(100%+2px)] right-0 left-0 z-10 rounded-br-md rounded-bl-md border-1 border-t-0 bg-inherit p-3">
+        <div className="absolute top-[calc(100%+2px)] right-0 left-0 z-10 rounded-br-md rounded-bl-md border border-t-0 bg-inherit p-3">
           {query.length === 0 ? (
             <p className="text-center text-xs">Start searching</p>
           ) : status === "pending" ? (
