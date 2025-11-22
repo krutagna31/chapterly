@@ -6,4 +6,5 @@ export * from "./input";
 export * from "./label";
 export * from "./pagination";
 export * from "./separator";
+export * from "./sonner";
 export * from "./table";
