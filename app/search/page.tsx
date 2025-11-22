@@ -1,5 +1,5 @@
-import { SearchForm } from "@/app/search/_components";
+import { VolumeSearch } from "@/app/search/_components";
 
 export default function SearchPage() {
-  return <SearchForm />;
+  return <VolumeSearch />;
 }

@@ -19,7 +19,7 @@ export type VolumeInfo = {
   maturityRating?: string;
   allowAnonLogging?: boolean;
   contentVersion?: string;
-  panelizationSummary: {
+  panelizationSummary?: {
     containsEpubBubbles: boolean;
     containsImageBubbles: boolean;
   };
@@ -41,13 +41,33 @@ export type LayerInfo = {
   layers: { layerId: string; volumeAnnotationsVersion: string }[];
 };
 
-export type SafeInfo = {
+export type saleInfo = {
   country: string;
   saleability: string;
   isEbook: boolean;
+  listPrice?: {
+    amount: number;
+    currencyCode: string;
+  };
+  retailPrice?: {
+    amount: number;
+    currencyCode: string;
+  };
+  buyLink?: string;
+  offers?: {
+    finskyOfferType: number;
+    listPrice: {
+      amountInMicros: number;
+      currencyCode: string;
+    };
+    retailPrice: {
+      amountInMicros: number;
+      currencyCode: string;
+    };
+  }[];
 };
 
-export type AcessInfo = {
+export type AccessInfo = {
   country: string;
   viewability: string;
   embeddable: boolean;
@@ -55,14 +75,19 @@ export type AcessInfo = {
   textToSpeechPermission: string;
   epub: {
     isAvailable: boolean;
-    acsTokenLink: string;
+    acsTokenLink?: string;
   };
   pdf: {
     isAvailable: boolean;
+    acsTokenLink?: string;
   };
   webReaderLink: string;
   accessViewStatus: string;
   quoteSharingAllowed: boolean;
+};
+
+export type SearchInfo = {
+  textSnippet: string;
 };
 
 export type Volume = {
@@ -70,8 +95,9 @@ export type Volume = {
   id: string;
   etag: string;
   selfLink: string;
-  layerInfo: LayerInfo;
+  layerInfo?: LayerInfo;
   volumeInfo: VolumeInfo;
-  saleInfo: SafeInfo;
-  accessInfo: AcessInfo;
+  saleInfo?: saleInfo;
+  accessInfo?: AccessInfo;
+  searchInfo?: SearchInfo;
 };

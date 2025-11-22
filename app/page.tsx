@@ -1,9 +1,9 @@
-import { VolumeSearch } from "@/app/_components/volumes-search";
+import { QuickSearch } from "@/app/_components";
 
 export default function HomePage() {
   return (
     <>
-      <VolumeSearch />
+      <QuickSearch />
     </>
   );
 }

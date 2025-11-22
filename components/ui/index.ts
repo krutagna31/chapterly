@@ -2,6 +2,7 @@ export * from "./button";
 export * from "./custom-link";
 export * from "./dialog";
 export * from "./dropdown-menu";
+export * from "./field";
 export * from "./input";
 export * from "./label";
 export * from "./pagination";

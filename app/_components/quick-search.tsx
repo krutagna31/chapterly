@@ -16,7 +16,7 @@ type Response = {
   totalItems: number;
 };
 
-function VolumeSearch() {
+function QuickSearch() {
   // const router = useRouter();
   const [query, setQuery] = useState<string>("");
   const [debouncedQuery, setDebouncedQuery] = useState<string>("");
@@ -25,7 +25,6 @@ function VolumeSearch() {
   const { data, status, error } = useQuery<Response>({
     queryKey: ["search", debouncedQuery],
     queryFn: async () => {
-      console.log("running");
       const url = new URL(
         `${process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API}/volumes`,
       );
@@ -71,7 +70,7 @@ function VolumeSearch() {
   };
 
   return (
-    <div className="bg-popover relative mx-auto max-w-md rounded-tl-md rounded-tr-md border-1">
+    <div className="bg-popover relative mx-auto max-w-md rounded-tl-md rounded-tr-md border">
       <form className="flex" onSubmit={handleSubmit}>
         <Label className="sr-only">Search</Label>
         <input
@@ -143,4 +142,4 @@ function VolumeSearch() {
   );
 }
 
-export { VolumeSearch as VolumeSearch };
+export { QuickSearch };

@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/context";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 import { QueryProvider } from "@/context/query-provider";
+import { Toaster } from "@/components/ui";
 
 const josefinSans = Josefin_Sans({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function HomeLayout({
             <main>{children}</main>
           </QueryProvider>
         </ThemeProvider>
+        <Toaster position="top-center" />
       </body>
     </html>
   );
