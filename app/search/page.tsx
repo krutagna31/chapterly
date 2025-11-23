@@ -15,7 +15,7 @@ import {
   FieldLabel,
   Input
 } from "@/components/ui";
-import type { SearchResponse } from "@/types";
+import type { Volume } from "@/types";
 
 
 const formSchema = z.object({
@@ -24,8 +24,14 @@ const formSchema = z.object({
   }),
 });
 
+type Response = {
+  kind: string;
+  totalItems: number;
+  items: Volume[];
+}
+
 export default function SearchPage() {
-  const [response, setResponse] = useState<SearchResponse | null>(
+  const [response, setResponse] = useState<Response | null>(
     null,
   );
 
@@ -35,7 +41,7 @@ export default function SearchPage() {
       query: "",
     },
   });
-  const { mutate, status, error } = useMutation<SearchResponse, Error, string>({
+  const { mutate, status, error } = useMutation<Response, Error, string>({
     mutationFn: async (query) => {
       const url = new URL(
         `${process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API!}/volumes`,
@@ -70,10 +76,12 @@ export default function SearchPage() {
     mutate(query);
   };
 
+  console.log(response);
+
   return (
     <>
       <SectionContainer>
-        <ViewContainer>
+        <ViewContainer className="max-w-7xl">
           <form
             id="volume-search"
             className="flex gap-6"
@@ -114,6 +122,11 @@ export default function SearchPage() {
               )}
             </div>
           </form>
+        </ViewContainer>
+      </SectionContainer>
+      <SectionContainer>
+        <ViewContainer>
+
         </ViewContainer>
       </SectionContainer>
     </>

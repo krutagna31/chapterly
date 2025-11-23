@@ -7,10 +7,7 @@ function CustomLink({
   ...props
 }: React.ComponentProps<typeof Link>) {
   return (
-    <Link
-      className={cn(className, "text-sky-600 hover:underline")}
-      {...props}
-    >
+    <Link className={cn("text-sky-600 hover:underline", className)} {...props}>
       {children}
     </Link>
   );

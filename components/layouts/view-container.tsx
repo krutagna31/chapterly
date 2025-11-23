@@ -1,12 +1,28 @@
 import { cn } from "@/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
+
+const viewContainerVariants = cva("mx-auto px-4", {
+  variants: {
+    size: {
+      default: "max-w-7xl",
+      sm: "max-w-3xl",
+      md: "max-w-5xl",
+      full: "w-full",
+    },
+  },
+  defaultVariants: {
+    size: "default",
+  },
+});
 
 function ViewContainer({
   children,
   className,
+  size,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & VariantProps<typeof viewContainerVariants>) {
   return (
-    <div className={cn(className, "mx-auto max-w-7xl px-4")} {...props}>
+    <div className={cn(viewContainerVariants({ size, className }))} {...props}>
       {children}
     </div>
   );
