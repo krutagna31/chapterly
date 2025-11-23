@@ -13,9 +13,10 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
-  Input,
+  Input
 } from "@/components/ui";
 import type { SearchResponse } from "@/types";
+
 
 const formSchema = z.object({
   query: z.string().refine((val) => val.trim().length > 0, {
